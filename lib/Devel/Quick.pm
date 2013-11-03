@@ -1,6 +1,6 @@
 package Devel::Quick;
 {
-  $Devel::Quick::VERSION = '0.02';
+  $Devel::Quick::VERSION = '0.03';
 }
 # ABSTRACT: Write single-step debugger one-liners easily (DB::DB)
 
@@ -88,7 +88,7 @@ Devel::Quick - Write single-step debugger one-liners easily (DB::DB)
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 
