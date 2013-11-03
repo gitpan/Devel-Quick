@@ -1,6 +1,6 @@
 package Devel::Quick;
 {
-  $Devel::Quick::VERSION = '0.03';
+  $Devel::Quick::VERSION = '0.04';
 }
 # ABSTRACT: Write single-step debugger one-liners easily (DB::DB)
 
@@ -88,7 +88,7 @@ Devel::Quick - Write single-step debugger one-liners easily (DB::DB)
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 
@@ -195,7 +195,7 @@ B<$args> is simply a reference to C<@_> that the code that is about to be
 executed can see. This is only relevant within subroutines. B<$hasargs> may tell 
 you if this is filled in or not, or just check @$args.
 
-Changing the underlying values will affect when the current subroutine sees.
+Changing the underlying values will affect what the current subroutine sees.
 
 =head1 AUTHOR
 

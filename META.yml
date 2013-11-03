@@ -17,4 +17,4 @@ name: Devel-Quick
 resources:
   homepage: https://github.com/wolfsage/Devel-Quick
   repository: git://github.com/wolfsage/Devel-Quick.git
-version: 0.03
+version: 0.04
