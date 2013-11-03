@@ -1,6 +1,6 @@
 package Devel::Quick;
 {
-  $Devel::Quick::VERSION = '0.01';
+  $Devel::Quick::VERSION = '0.02';
 }
 # ABSTRACT: Write single-step debugger one-liners easily (DB::DB)
 
@@ -88,21 +88,21 @@ Devel::Quick - Write single-step debugger one-liners easily (DB::DB)
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 SYNOPSIS
 
 Devel::Trace in one line:
 
-  perl -d:Quick='print ">> ($subroutine)$filename:$line $code"' prog.pl
+  perl -d:Quick='print ">> $filename:$line $code"' prog.pl
 
 The above, with L<strict> checking enabled (not default):
 
-  perl -d:Quick=-strict,'print ">> ($subroutine)$filename:$line $code"' prog.pl
+  perl -d:Quick=-strict,'print ">> $filename:$line $code"' prog.pl
 
 Or shortened:
 
-  perl -d:Quick=-s,'print ">> ($subroutine)$filename:$line $code"' prog.pl
+  perl -d:Quick=-s,'print ">> $filename:$line $code"' prog.pl
 
 If you need '-' as the first character in your code, use a ';':
 
