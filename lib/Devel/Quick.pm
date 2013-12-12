@@ -1,6 +1,6 @@
 package Devel::Quick;
 {
-  $Devel::Quick::VERSION = '0.04';
+  $Devel::Quick::VERSION = '0.05';
 }
 # ABSTRACT: Write single-step debugger one-liners easily (DB::DB)
 
@@ -16,6 +16,7 @@ sub import {
 	if ($_[0] =~ /^-/) {
 		if ($_[0] eq '-s' || $_[0] eq '-strict') {
 			$strict = 1;
+			shift @_;
 		} else {
 			require Carp;
 			Carp::croak("Unknown switch '$_[0]'");
@@ -88,7 +89,7 @@ Devel::Quick - Write single-step debugger one-liners easily (DB::DB)
 
 =head1 VERSION
 
-version 0.04
+version 0.05
 
 =head1 SYNOPSIS
 
