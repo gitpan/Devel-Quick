@@ -1,6 +1,6 @@
 package Devel::Quick;
 {
-  $Devel::Quick::VERSION = '0.05';
+  $Devel::Quick::VERSION = '0.06';
 }
 # ABSTRACT: Write single-step debugger one-liners easily (DB::DB)
 
@@ -39,10 +39,14 @@ use strict;
 use warnings;
 
 sub DB {
-	my ($package, $filename, $line,
+	# Get who called us
+	my ($package, $filename, $line) = caller(0);
+
+	# Get the rest from the context of who called us
+	my (undef, undef, undef,
 	    $subroutine, $hasargs, $wantarray,
 	    $evaltext, $is_require, $hints,
-	    $bitmask, $hinthash) = caller(0);
+	    $bitmask, $hinthash) = caller(1);
 
 	my $args = \@_;
 
@@ -89,7 +93,7 @@ Devel::Quick - Write single-step debugger one-liners easily (DB::DB)
 
 =head1 VERSION
 
-version 0.05
+version 0.06
 
 =head1 SYNOPSIS
 
@@ -121,10 +125,14 @@ method and eval's it in:
   use warnings;
 
   sub DB {
-  	my ($package, $filename, $line,
+  	# Get who called us
+  	my ($package, $filename, $line) = caller(0);
+  
+  	# Get the rest from the context of who called us
+  	my (undef, undef, undef,
   	    $subroutine, $hasargs, $wantarray,
   	    $evaltext, $is_require, $hints,
-  	    $bitmask, $hinthash) = caller(0);
+  	    $bitmask, $hinthash) = caller(1);
   
   	my $args = \@_;
   
