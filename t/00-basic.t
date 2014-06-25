@@ -11,7 +11,7 @@ require Devel::Quick;
 # errors get reported properly
 throws_ok
 	{ Devel::Quick->import('$x - '); }
-	qr/Failed to parse code:.*26:\s+\$x -/ms,
+	qr/Failed to parse code:.*30:\s+\$x -/ms,
 	"Bad code detected and reported"
 ;
 
@@ -64,6 +64,17 @@ lives_ok
 lives_ok
 	{ Devel::Quick->import('-strict', 'if (1 == 1) { }') }
 	'-strict is not injected into final code'
+;
+
+# -b and -begin work
+lives_ok
+	{ Devel::Quick->import('-b', 'if (1 == 1) { }') }
+	'-b is allowed'
+;
+
+lives_ok
+	{ Devel::Quick->import('-begin', 'if (1 == 1) { }') }
+	'-begin is allowed'
 ;
 
 done_testing;

@@ -1,9 +1,6 @@
 package Devel::Quick;
-{
-  $Devel::Quick::VERSION = '0.06';
-}
 # ABSTRACT: Write single-step debugger one-liners easily (DB::DB)
-
+$Devel::Quick::VERSION = '0.07';
 use strict;
 use warnings;
 
@@ -11,32 +8,42 @@ sub import {
 	my $class = shift;
 
 	my $strict = 0;
+	my $begin = 0;
 
-	# Parse leading option
-	if ($_[0] =~ /^-/) {
-		if ($_[0] eq '-s' || $_[0] eq '-strict') {
-			$strict = 1;
-			shift @_;
+	# Parse leading options
+	for my $opt (@_) {
+		if ($opt =~ /^-/) {
+			if ($opt eq '-s' || $opt eq '-strict') {
+				$strict = 1;
+				shift @_;
+			} elsif ($opt eq '-b' || $opt eq -'begin') {
+				$begin = 1;
+				shift @_;
+			} else {
+				require Carp;
+				Carp::croak("Unknown switch '$_[0]'");
+			}
 		} else {
-			require Carp;
-			Carp::croak("Unknown switch '$_[0]'");
+			last;
 		}
 	}
 
 	# Put back in broken out commas...
 	my $code = join(",", @_);
 
-	_gen_db_sub($code, $strict);
+	_gen_db_sub($code, $strict, $begin);
 }
 
 sub _gen_db_sub {
-	my ($code, $strict) = @_;
+	my ($code, $strict, $begin) = @_;
 
 	my $wrapper = <<'DBCODE';
 package DB;
 
 use strict;
 use warnings;
+
+<<BEGIN>>
 
 sub DB {
 	# Get who called us
@@ -47,6 +54,8 @@ sub DB {
 	    $subroutine, $hasargs, $wantarray,
 	    $evaltext, $is_require, $hints,
 	    $bitmask, $hinthash) = caller(1);
+
+	return if $package && $package eq 'Devel::Quick';
 
 	my $args = \@_;
 
@@ -71,6 +80,13 @@ DBCODE
 		$wrapper =~ s/<<NOSTRICT>>/no strict;/;
 	}
 
+	# Are we stepping as soon as possible? 
+	if ($begin) {
+		$wrapper =~ s/<<BEGIN>>/\$DB\::single = 1;/;
+	} else {
+		$wrapper =~ s/<<BEGIN>>//;
+	}
+
 	$wrapper =~ s/<<CODE>>/$code/;
 
 	eval $wrapper;
@@ -93,7 +109,7 @@ Devel::Quick - Write single-step debugger one-liners easily (DB::DB)
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 SYNOPSIS
 
@@ -108,6 +124,19 @@ The above, with L<strict> checking enabled (not default):
 Or shortened:
 
   perl -d:Quick=-s,'print ">> $filename:$line $code"' prog.pl
+
+The above, but start stepping immediately (look at code in "use ..." 
+statements)
+
+  perl -d:Quick=-begin,'print ">> $filename:$line $code"' prog.pl
+
+Or shortened:
+
+  perl -d:Quick=-b,'print ">> $filename:$line $code"' prog.pl
+
+You can combine opts:
+
+  perl -d:Quick=-s,-b,'print ">> $filename:$line $code"' prog.pl
 
 If you need '-' as the first character in your code, use a ';':
 
@@ -124,6 +153,8 @@ method and eval's it in:
   use strict;
   use warnings;
 
+  $DB::single = 1;
+
   sub DB {
   	# Get who called us
   	my ($package, $filename, $line) = caller(0);
@@ -134,6 +165,8 @@ method and eval's it in:
   	    $evaltext, $is_require, $hints,
   	    $bitmask, $hinthash) = caller(1);
   
+        return if $package && $package eq 'Devel::Quick';
+
   	my $args = \@_;
   
   	my $code;
@@ -149,6 +182,10 @@ method and eval's it in:
 
 By default, warnings are enabled but strict mode is disabled. If you want 
 strict, the first argument to import should be C<-s> or C<-strict>.
+
+By default, tracing also starts after compile time. This means that code in
+use statements will not be seen. If you want to trace into use statements,
+use the C<-b> or C<-begin> flag. 
 
 If you need to pass a C<-> as the first character in the Perl code, you'll need 
 to inject a semi-colon (;) before it like so:
