@@ -1,6 +1,6 @@
 package Devel::Quick;
 # ABSTRACT: Write single-step debugger one-liners easily (DB::DB)
-$Devel::Quick::VERSION = '0.07';
+$Devel::Quick::VERSION = '0.08';
 use strict;
 use warnings;
 
@@ -10,8 +10,10 @@ sub import {
 	my $strict = 0;
 	my $begin = 0;
 
+	my @opts = @_;
+
 	# Parse leading options
-	for my $opt (@_) {
+	for my $opt (@opts) {
 		if ($opt =~ /^-/) {
 			if ($opt eq '-s' || $opt eq '-strict') {
 				$strict = 1;
@@ -109,7 +111,7 @@ Devel::Quick - Write single-step debugger one-liners easily (DB::DB)
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 

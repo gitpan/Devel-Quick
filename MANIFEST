@@ -7,5 +7,6 @@ Makefile.PL
 README
 dist.ini
 lib/Devel/Quick.pm
+out.txt
 t/00-basic.t
 t/release-pod-syntax.t
